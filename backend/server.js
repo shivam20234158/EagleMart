@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import productRoutes from "./routes/product.route.js";
+import cartRoutes from "./routes/cart.route.js";
 //alllow to read content of .env file and add all variable to process.env
 dotenv.config();
 
@@ -12,6 +13,7 @@ const app=express();
 const PORT=process.env.PORT || 5001;
 app.use("/api/auth",authRoutes);
 app.use("/api/products",productRoutes);
+app.use("/api/cart",cartRoutes);
 //our server is listening on this port
 connectDB();
 app.listen(PORT,()=>{
