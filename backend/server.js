@@ -8,6 +8,7 @@ import productRoutes from "./routes/product.route.js";
 import cartRoutes from "./routes/cart.route.js";
 import couponRoutes from "./routes/coupon.route.js";
 import paymentRoutes from "./routes/payment.route.js";
+import analyticsRoutes from "./routes/analytics.route.js";
 //alllow to read content of .env file and add all variable to process.env
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use("/api/products",productRoutes);
 app.use("/api/cart",cartRoutes);
 app.use("/api/coupons",couponRoutes);
 app.use("/api/payments",paymentRoutes);
+app.use("/api/analytics",analyticsRoutes);
 //our server is listening on this port
 connectDB();
 app.listen(PORT,()=>{
