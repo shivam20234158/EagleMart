@@ -1,6 +1,7 @@
 //const express = require("express");(if not module in type)
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 //routes
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
