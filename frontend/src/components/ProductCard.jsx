@@ -1,44 +1,45 @@
-import { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
-import axios from "../lib/axios";
 import toast from "react-hot-toast";
-import LoadingSpinner from "./LoadingSpinning";
+import { ShoppingCart } from "lucide-react";
+import { useUserStore } from "../stores/useUserStore";
+import { useCartStore } from "../stores/useCartStore";
 
-const PeopleAlsoBought = () => {
-    // Initialized as an empty array []. This will eventually hold the list of products suggested to the user.
-	const [recommendations, setRecommendations] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-
-    // The empty dependency array [] at the end is crucial. It tells React: "Run this function only once, immediately after the component mounts (appears on the screen)."
-
-	useEffect(() => {
-		const fetchRecommendations = async () => {
-			try {
-                // It sends a GET request to your backend.
-                //  Once the data arrives, setRecommendations(res.data) updates the state, which triggers React to re-render the UI with the new products.
-				const res = await axios.get("/products/recommendations");
-				setRecommendations(res.data);
-			} catch (error) {
-				toast.error(error.response.data.message || "An error occurred while fetching recommendations");
-			} finally {
-				setIsLoading(false);
-			}
-		};
-
-		fetchRecommendations();
-	}, []);
-
-	if (isLoading) return <LoadingSpinner />;
+const ProductCard = ({ product }) => {
+	const { user } = useUserStore();
+	const { addToCart } = useCartStore();
+	const handleAddToCart = () => {
+		if (!user) {
+			toast.error("Please login to add products to cart", { id: "login" });
+			return;
+		} else {
+			// add to cart
+			addToCart(product);
+		}
+	};
 
 	return (
-		<div className='mt-8'>
-			<h3 className='text-2xl font-semibold text-emerald-400'>People also bought</h3>
-			<div className='mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg: grid-col-3'>
-				{recommendations.map((product) => (
-					<ProductCard key={product._id} product={product} />
-				))}
+		<div className='flex w-full relative flex-col overflow-hidden rounded-lg border border-gray-700 shadow-lg'>
+			<div className='relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl'>
+				<img className='object-cover w-full' src={product.image} alt='product image' />
+				<div className='absolute inset-0 bg-black bg-opacity-20' />
+			</div>
+
+			<div className='mt-4 px-5 pb-5'>
+				<h5 className='text-xl font-semibold tracking-tight text-white'>{product.name}</h5>
+				<div className='mt-2 mb-5 flex items-center justify-between'>
+					<p>
+						<span className='text-3xl font-bold text-emerald-400'>${product.price}</span>
+					</p>
+				</div>
+				<button
+					className='flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-center text-sm font-medium
+					 text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300'
+					onClick={handleAddToCart}
+				>
+					<ShoppingCart size={22} className='mr-2' />
+					Add to cart
+				</button>
 			</div>
 		</div>
 	);
 };
-export default PeopleAlsoBought;
+export default ProductCard;
